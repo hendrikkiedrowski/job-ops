@@ -187,8 +187,11 @@ FROM runtime-node-deps AS camoufox-cache
 # Fetch target-platform Camoufox binaries after production dependencies are
 # installed so arm64 images do not inherit x64 browser assets from build stages.
 COPY scripts/camoufox-fetch.mjs ./scripts/camoufox-fetch.mjs
+# ponytail: camoufox fetch made non-fatal — it rate-limits on GitHub's anon API
+# in CI without a token. jobspy (free boards) + IMAP tracking don't need it; the
+# JS browser extractors degrade. Pass github_token in CI to restore it.
 RUN --mount=type=secret,id=github_token,required=false \
-    sh -c 'GITHUB_TOKEN="$([ -f /run/secrets/github_token ] && cat /run/secrets/github_token || true)" node ./scripts/camoufox-fetch.mjs'
+    sh -c 'GITHUB_TOKEN="$([ -f /run/secrets/github_token ] && cat /run/secrets/github_token || true)" node ./scripts/camoufox-fetch.mjs || echo "camoufox fetch skipped (build continues)"'
 
 FROM runtime-base AS tectonic
 
