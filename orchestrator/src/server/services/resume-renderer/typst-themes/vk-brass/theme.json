@@ -1,0 +1,21 @@
+{
+  "id": "vk-brass",
+  "label": "VK Brass",
+  "description": "Serif resume with a brass accent and uppercase section labels, matching vkiedrowski.de.",
+  "kind": "native",
+  "entrypoint": "main.typ",
+  "tokens": {
+    "pageMargin": "(x: 0.7in, y: 0.6in)",
+    "bodySize": "10pt",
+    "parLeading": "0.58em",
+    "sectionTop": "10pt",
+    "sectionBottom": "5pt",
+    "sectionSize": "10.5pt",
+    "lineWidth": "0.6pt",
+    "nameSize": "22pt",
+    "headlineSize": "10pt",
+    "contactSize": "8.8pt",
+    "entryMetaSize": "9pt",
+    "accent": "#8b5e35"
+  }
+}
