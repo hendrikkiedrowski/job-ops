@@ -17,7 +17,7 @@ import {
   type TypstThemeTokens,
 } from "./typst";
 
-const nativeThemes = new Set(["classic", "compact"]);
+const nativeThemes = new Set(["classic", "compact", "vk-brass"]);
 
 const baseDocument: ResumeRenderDocument = {
   name: "Jane Doe",
@@ -421,6 +421,34 @@ describe("typst resume renderer", () => {
     expect(converted.experience[0]?.bullets).toEqual([
       "Managed #emph[critical] systems.",
       "Handled \\$50k budgets.",
+    ]);
+  });
+
+  it("neutralizes leading block markers so eval'd bullets don't become lists or headings", () => {
+    const converted = convertDocFieldsToTypst({
+      ...baseDocument,
+      summary: "= not a heading",
+      experience: [
+        {
+          title: "Acme",
+          subtitle: "",
+          date: "",
+          bullets: [
+            "- already dashed",
+            "+5 years scaling Loki",
+            "1. first place",
+            "/ term style",
+          ],
+        },
+      ],
+    });
+
+    expect(converted.summary).toBe("\\= not a heading");
+    expect(converted.experience[0]?.bullets).toEqual([
+      "\\- already dashed",
+      "\\+5 years scaling Loki",
+      "1\\. first place",
+      "\\/ term style",
     ]);
   });
 

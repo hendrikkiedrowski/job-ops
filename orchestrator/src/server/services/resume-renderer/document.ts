@@ -145,14 +145,46 @@ function joinNonEmpty(
     .join(separator);
 }
 
+const NAMED_ENTITIES: Record<string, string> = {
+  nbsp: " ",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  rsquo: "\u2019",
+  lsquo: "\u2018",
+  rdquo: "\u201d",
+  ldquo: "\u201c",
+  mdash: "\u2014",
+  ndash: "\u2013",
+  hellip: "\u2026",
+  bull: "\u2022",
+  deg: "\u00b0",
+  copy: "\u00a9",
+  reg: "\u00ae",
+  trade: "\u2122",
+};
+
+function codePointToString(code: number): string {
+  if (!Number.isInteger(code) || code < 0 || code > 0x10ffff) return "";
+  try {
+    return String.fromCodePoint(code);
+  } catch {
+    return "";
+  }
+}
+
 function decodeHtml(value: string): string {
   return value
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'");
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) =>
+      codePointToString(parseInt(hex, 16)),
+    )
+    .replace(/&#(\d+);/g, (_, dec) => codePointToString(parseInt(dec, 10)))
+    .replace(
+      /&([a-z]+);/gi,
+      (match, name) => NAMED_ENTITIES[name.toLowerCase()] ?? match,
+    )
+    .replace(/&amp;/gi, "&");
 }
 
 function stripHtml(value: string): string {

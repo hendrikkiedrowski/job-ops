@@ -193,6 +193,10 @@ function escapeRawTypst(value: string): string {
   return value.replace(/([\\#*$@_[\]{}<>`])/g, "\\$1");
 }
 
+function neutralizeLeadingBlockMarker(value: string): string {
+  return value.replace(/^([-+/=])/, "\\$1").replace(/^(\d+)([.)])/, "$1\\$2");
+}
+
 function escapeTypstText(value: string): string {
   const normalized = normalizeText(value);
   const parts = normalized.split(/(<\/?(?:strong|b|em|i)\b[^>]*>)/gi);
@@ -232,7 +236,7 @@ function escapeTypstText(value: string): string {
     result.push("]");
   }
 
-  return result.join("");
+  return neutralizeLeadingBlockMarker(result.join(""));
 }
 
 function escapeTypstUrl(value: string): string {

@@ -296,4 +296,27 @@ describe("normalizeResumeJsonToLatexDocument", () => {
       "Worked with <b>bold text</b> and <i>italic text</i>. Strip this div",
     ]);
   });
+
+  it("decodes numeric and named HTML entities in descriptions", () => {
+    const document = normalizeResumeJsonToLatexDocument({
+      basics: { name: "Jane Doe" },
+      sections: {
+        experience: {
+          hidden: false,
+          items: [
+            {
+              id: "exp-1",
+              company: "Acme",
+              description:
+                "<ul><li>Cut cost &amp; latency &#8217;24 &mdash; shipped &#x2714;</li></ul>",
+            },
+          ],
+        },
+      },
+    });
+
+    expect(document.experience[0]?.bullets).toEqual([
+      "Cut cost & latency \u201924 \u2014 shipped \u2714",
+    ]);
+  });
 });
