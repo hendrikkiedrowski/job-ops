@@ -719,7 +719,6 @@ export const typstResumeRenderer: ResumeRenderer = {
         tempDir,
       );
       let typst: string;
-      let resumeDataDoc: LatexResumeDocument;
 
       if (manifest.kind === "native") {
         if (!tokens) {
@@ -728,11 +727,10 @@ export const typstResumeRenderer: ResumeRenderer = {
           );
         }
         typst = buildTypstDocument(renderableDocument, template, tokens);
-        resumeDataDoc = renderableDocument;
       } else {
         typst = buildAdaptedTypstDocument(template);
-        resumeDataDoc = convertDocFieldsToTypst(renderableDocument);
       }
+      const resumeDataDoc = convertDocFieldsToTypst(renderableDocument);
 
       await writeFile(resumeDataPath, JSON.stringify(resumeDataDoc), "utf8");
       await writeFile(typPath, typst, "utf8");

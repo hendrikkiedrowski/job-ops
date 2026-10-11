@@ -32,7 +32,7 @@ export const TYPST_THEME_KINDS: Record<
   classic: "native",
   "clean-print-cv": "adapted",
   compact: "native",
-  "vk-brass": "native",
+  "vk-brass": "adapted",
 };
 
 export const TYPST_THEME_OPTIONS = TYPST_THEME_VALUES.map((value) => ({

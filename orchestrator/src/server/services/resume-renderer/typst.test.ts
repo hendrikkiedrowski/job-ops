@@ -17,7 +17,7 @@ import {
   type TypstThemeTokens,
 } from "./typst";
 
-const nativeThemes = new Set(["classic", "compact", "vk-brass"]);
+const nativeThemes = new Set(["classic", "compact"]);
 
 const baseDocument: ResumeRenderDocument = {
   name: "Jane Doe",
@@ -256,6 +256,17 @@ describe("typst resume renderer", () => {
     expect(template).toContain("#let bullet-trailing(entry)");
     expect(template).toContain('text-of(section-titles.at("awards"');
     expect(template).toContain("trailing: bullet-trailing(entry)");
+  });
+
+  it("ships vk-brass as a self-contained data-driven theme, not a placeholder body", async () => {
+    const manifest = await readTypstThemeManifest("vk-brass");
+    expect(manifest.kind).toBe("adapted");
+
+    const template = await readTypstTemplate("vk-brass");
+    expect(template).toContain("json(__RESUME_DATA_PATH__)");
+    expect(template).toContain('source.at("experience"');
+    expect(template).not.toContain("__BODY__");
+    expect(template).not.toContain("@preview/");
   });
 
   it("renders the newly supported native sections and picture block", async () => {
